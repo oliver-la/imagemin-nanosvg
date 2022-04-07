@@ -1,42 +1,44 @@
-# imagemin-svgo ![GitHub Actions Status](https://github.com/imagemin/imagemin-svgo/workflows/test/badge.svg?branch=master)
+# imagemin-nanosvg ![GitHub Actions Status](https://github.com/oliver-la/imagemin-nanosvg/workflows/test/badge.svg?branch=master)
 
-> [SVGO](https://github.com/svg/svgo) imagemin plugin
-
+> [nanosvg](https://vecta.io/nano) plugin
 
 ## Install
 
 ```
-$ npm install imagemin-svgo
+$ npm install imagemin-nanosvg
 ```
-
 
 ## Usage
 
 ```js
-import imagemin from 'imagemin';
-import imageminSvgo from 'imagemin-svgo';
+import imagemin from "imagemin";
+import imageminSvgo from "imagemin-nanosvg";
 
 (async () => {
-	await imagemin(['images/*.svg'], {
-		destination: 'build/images',
+	await imagemin(["images/*.svg"], {
+		destination: "build/images",
 		plugins: [
-			imageminSvgo({
-				plugins: [{
-					name: 'removeViewBox',
-					active: false
-				}]
-			})
-		]
+			imageminNanoSvg({
+				precision: 3, // Set the number of decimal places to compress for numerical values, defaults to 3.
+				fonts: true, // Enable the embedding of fonts, defaults to true. If enabled, will embed fonts into the SVG, if text and fonts are detected. Fonts must be available on Google fonts.
+				classes: false, // Do not modify your classes in the SVG, defaults to false.
+				ids: false, // Do not modify your id(s) in the SVG, defaults to false.
+				structure: false, // Do not modify your structure in the SVG, defaults to false.
+				events: false, // Do not modify your events in the SVG, defaults to false.
+				wordpress: false, // Export as WordPress-compatible SVG, defaults to false.
+				react: false, // Export as React SVG component in JSX file format, defaults to false.
+				// font_path: 'assets/fonts'
+			}),
+		],
 	});
 
-	console.log('Images optimized');
+	console.log("Images optimized");
 })();
 ```
 
-
 ## API
 
-### imageminSvgo([options])(buffer)
+### imageminNanoSvg([options])(buffer)
 
 Returns a `Promise<Buffer>`.
 
@@ -44,14 +46,13 @@ Returns a `Promise<Buffer>`.
 
 Type: `Object`
 
-Pass options to [SVGO](https://github.com/svg/svgo#configuration).
+Pass options to [nano](https://www.npmjs.com/package/nanosvg).
 
 #### buffer
 
 Type: `Buffer`
 
 Buffer to optimize.
-
 
 ## License
 
