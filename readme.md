@@ -15,7 +15,7 @@ $ npm install imagemin-nanosvg
 
 ```js
 import imagemin from "imagemin";
-import imageminSvgo from "imagemin-nanosvg";
+import imageminNanoSvg from "imagemin-nanosvg";
 
 (async () => {
 	await imagemin(["images/*.svg"], {
