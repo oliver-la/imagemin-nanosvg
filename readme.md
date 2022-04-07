@@ -2,6 +2,9 @@
 
 > [nanosvg](https://vecta.io/nano) plugin
 
+**WARNING**: You need a valid license which you can purchase from vecta.io/nano to use this.
+Be sure to activate your license using "npx nanosvg --activate=LICENSE"
+
 ## Install
 
 ```
