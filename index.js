@@ -1,47 +1,45 @@
 const isSvg = require("is-svg");
 const nanofy = require("nanosvg");
-const tmp = require("tmp");
-const fs = require("fs");
+const fs = require("fs-extra");
 const path = require("path");
 
-module.exports = (options) => (buffer) => {
-	return new Promise((resolve) => {
-		if (!isSvg(buffer)) {
-			return resolve(buffer);
-		}
+module.exports = (options) => async (buffer) => {
+	if (!isSvg(buffer)) {
+		return Promise.resolve(buffer);
+	}
 
-		if (Buffer.isBuffer(buffer)) {
-			buffer = buffer.toString();
-		}
+	if (Buffer.isBuffer(buffer)) {
+		buffer = buffer.toString();
+	}
 
-		// "what the hell are they doing here, you ask", I ask vecta.io the same - Part I
-		// nanofy expects the input, AND output paths to be relative to the current directory
-		// it simply refuses to take absolute paths, such as /tmp
-		const inputFile = tmp.fileSync({
-			tmpdir: "./",
-			postfix: ".svg",
-		});
-		const outputDir = tmp.dirSync({ tmpdir: "./", unsafeCleanup: true }).name;
+	const envPaths = await import("env-paths");
+	const paths = envPaths.default("imagemin-nanosvg");
 
-		// nanofy doesn't accept buffers as direct input, so we need to create a temporary file it can read from
-		// very efficient.
-		fs.writeSync(inputFile.fd, buffer);
+	// "what the hell are they doing here, you ask", I ask vecta.io the same - Part I
+	// nanofy expects the input, AND output paths to be relative to the current directory
+	// it simply refuses to take absolute paths, such as /tmp
+	const inputFile = path.join(
+		paths.temp,
+		"input",
+		require("crypto").createHash("md5").update(buffer).digest("hex") + ".svg"
+	);
 
-		// "what the hell are they doing here, you ask", I ask vecta.io the same - Part II
-		// The promise of "nanofy" below resolves BEFORE the output file is actually written, forcing us to watch manually for an output
-		fs.watch(outputDir, {}, (eventType, fileName) => {
-			if (eventType === "rename") {
-				const result = fs.readFileSync(path.join(outputDir, fileName));
-				// since we can't write to /tmp, we need to force a cleanup of the temp files
-				tmp.setGracefulCleanup();
-				resolve(Buffer.from(result));
+	const outputDir = path.join(paths.temp, "output");
+	const outputFile = path.join(outputDir, path.basename(inputFile));
+
+	// nanofy doesn't accept buffers as direct input, so we need to create a temporary file it can read from
+	// very efficient.
+	return await fs
+		.outputFile(inputFile, buffer)
+		.then(() => fs.ensureDir(outputDir))
+		.then(() => nanofy(inputFile, outputDir, { silent: true, ...options }))
+		.catch((res) => {
+			if (res) {
+				console.log(res.error || res.message);
 			}
+		})
+		.then(() => fs.readFile(outputFile))
+		.then((data) => {
+			return data;
 		});
-
-		nanofy(
-			path.basename(inputFile.name),
-			path.join("./", path.basename(outputDir)),
-			options
-		).then(() => {});
-	});
 };

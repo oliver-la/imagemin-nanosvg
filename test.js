@@ -18,12 +18,14 @@ test("support SVGO options", async (t) => {
 	const data = (
 		await imageminNanoSvg({
 			classes: true,
-		})('<svg><rect class="MyClass" x="0" y="0" width="50" height="50"/></svg>')
+		})(
+			'<svg><rect class="OptionsClass" x="0" y="0" width="50" height="50"/></svg>'
+		)
 	).toString();
 
 	t.is(
 		data,
-		'<svg xmlns="http://www.w3.org/2000/svg"><path class="MyClass" d="M0 0h50v50H0z"/></svg>'
+		'<svg xmlns="http://www.w3.org/2000/svg"><path class="OptionsClass" d="M0 0h50v50H0z"/></svg>'
 	);
 });
 
