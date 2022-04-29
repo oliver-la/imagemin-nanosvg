@@ -8,14 +8,14 @@ Be sure to activate your license using "npx nanosvg --activate=LICENSE"
 ## Install
 
 ```
-$ npm install imagemin-nanosvg
+$ npm install @oliver-la/imagemin-nanosvg
 ```
 
 ## Usage
 
 ```js
 import imagemin from "imagemin";
-import imageminNanoSvg from "imagemin-nanosvg";
+import imageminNanoSvg from "@oliver-la/imagemin-nanosvg";
 
 (async () => {
 	await imagemin(["images/*.svg"], {
