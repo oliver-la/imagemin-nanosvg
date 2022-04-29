@@ -1,4 +1,4 @@
-# imagemin-nanosvg ![GitHub Actions Status](https://github.com/oliver-la/imagemin-nanosvg/workflows/test/badge.svg?branch=master)
+# imagemin-nanosvg
 
 > [nanosvg](https://vecta.io/nano) plugin
 
