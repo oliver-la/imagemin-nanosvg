@@ -10,11 +10,9 @@ module.exports = (options) => async (buffer) => {
 		buffer = Buffer.from(buffer, "utf8");
 	}
 
-	return await nanofy(buffer, null, { silent: true, ...options }).catch(
-		(res) => {
-			if (res) {
-				console.log(res.error || res.message);
-			}
+	return nanofy(buffer, null, { silent: true, ...options }).catch((res) => {
+		if (res) {
+			console.log(res.error || res.message);
 		}
-	);
+	});
 };
